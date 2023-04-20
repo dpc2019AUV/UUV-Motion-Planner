@@ -1,0 +1,13 @@
+<launch>
+<arg name="sensor_range" />
+<arg name="sensor_rate" />
+
+    <node pkg="local_map" type="local_map" name="local_map" output="screen">
+        <remap from="~point_cloud" to="globalmap_generator/point_cloud"/>
+        <!--remap from="~/local_map" to="/local_map"/-->
+        <param name="loacl_map/sensor_range" value="$(arg sensor_range)"/>
+        <param name="local_map/sensor_rate" value="$(arg sensor_rate)"/>
+    </node>
+
+
+</launch>

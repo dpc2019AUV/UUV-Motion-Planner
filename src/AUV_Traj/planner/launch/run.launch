@@ -1,0 +1,74 @@
+<launch>
+    <!--map size-->
+    <arg name="map_size_x" value="60.0" />
+    <arg name="map_size_y" value="60.0" />
+    <arg name="map_size_z" value="20.0" />
+    <arg name="map_resolution" value="1.0" />
+    <arg name="v_mean" value="0.95" />
+
+    <!-- point_cloud -->
+	<include file="$(find point_cloud_gene)/launch/point_cloud.xml">
+		<arg name="map_xsize" value="$(arg map_size_x)" />
+		<arg name="map_ysize" value="$(arg map_size_y)" />
+		<arg name="map_zsize" value="$(arg map_size_z)" />
+        <arg name="point_resolution" value="$(arg map_resolution)" />
+        <arg name="obs_number" value="25" />
+        <arg name="dist_safe" value="10.0" />
+	</include>
+
+    <!-- local_map -->
+	<include file="$(find local_map)/launch/local_map.xml">
+        <arg name="sensor_range" value="15.0"/>
+        <arg name="sensor_rate" value="0.25"/>
+    </include>
+
+    <!--planner-->
+    <node pkg="planner" name="plan_node" type="traj_planner" output="screen" >
+        <param name="map/x_size" value="$(arg map_size_x)" />
+        <param name="map/y_size" value="$(arg map_size_y)" />
+        <param name="map/z_size" value="$(arg map_size_z)" />
+        <param name="map/grid_resolution"  value="$(arg map_resolution)" />
+
+        <param name="plan_man/v_mean" value="$(arg v_mean)"/>  <!--mean velocity of AUV-->
+        <param name="plan_man/dist2start" value="4.0"/>
+        <param name="plan_man/dist2goal" value="10.0"/>
+
+        <param name="path/x_size" value="$(arg map_size_x)" />
+        <param name="path/y_size" value="$(arg map_size_y)" />
+        <param name="path/z_size" value="$(arg map_size_z)" />
+        <param name="path/resolution"  value="$(arg map_resolution)" />
+        <param name="path/motion_primitives_num"  value="5" />  <!--motion primitives number-->
+        <param name="path/allocate_num" value="1000"/>   <!--node vector size, used for store expand nodes-->
+        <param name="path/epsilon" value="1.0"/>     <!--resolution,used for samplify path-->
+        <param name="path/interpolation_dist" value="4.5"/>
+
+        <param name="dubins/step"  value="1.0" />
+        <param name="dubins/fit_dist"  value="4.0" />
+        <param name="dubins/horizon_radius"  value="2.5" />
+        <param name="dubins/vetical_radius"  value="3.0" />
+
+        <param name="traj/v_mean" value="$(arg v_mean)" />
+        <param name="traj/v_max" value="1.0" />
+        <param name="traj/a_max" value="0.5" />
+        <param name="traj/wh_max" value="0.4" />
+        <param name="traj/wv_max" value="0.333" />
+        <param name="traj/p_max" value="0.5235" />
+        <param name="traj/safe_dist" value="4.0" />
+    </node>
+
+    <!--traj server-->
+    <node pkg="planner" name="plan_server" type="traj_server" output="screen" />
+
+    <!--waypoint-->
+    <node pkg="waypoint_generator" name="waypoint_generator" type="waypoint_generator" output="screen">        
+        <remap from="~goal" to="/goal"/>
+        <param name="waypoint_type" value="manual"/>
+    </node>
+
+    <!-- rviz -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find planner)/config/config.rviz" required="true" />
+
+    <!--ros bag-->
+    <node pkg="rosbag" type="record"  name="bag_record"  args="-a -o /home/ubuntu/ROSBags/v_a.bag"/>
+</launch>
+

@@ -1,0 +1,21 @@
+<launch>
+<arg name="map_xsize" />
+<arg name="map_ysize" />
+<arg name="map_zsize" />
+<arg name="obs_number" />
+<arg name="dist_safe" />
+<arg name="point_resolution" />
+
+    <node pkg="point_cloud_gene" type="global_point_cloud" name="global_point" output="screen">
+        <!--remap from="~point_cloud" to="/point_cloud"/-->
+
+        <param name="pc/cloud_resolution" value="$(arg point_resolution)"/>
+        <param name="pc/obs_number" value="$(arg obs_number)"/>
+        <param name="pc/distacne_safe" value="$(arg dist_safe)"/>
+        <param name="pc/map_xsize" value="$(arg map_xsize)"/>
+        <param name="pc/map_ysize" value="$(arg map_ysize)"/>
+        <param name="pc/map_zsize" value="$(arg map_zsize)"/>
+    </node>
+
+
+</launch>

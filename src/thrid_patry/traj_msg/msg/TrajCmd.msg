@@ -1,0 +1,15 @@
+Header header 
+geometry_msgs/Point pt 
+geometry_msgs/Vector3 vel
+geometry_msgs/Vector3 acc
+uint32 traj_Id
+
+uint8 TRAJECTORY_STATUS_EMPTY = 0
+uint8 TRAJECTORY_STATUS_READY = 1
+uint8 TRAJECTORY_STATUS_COMPLETED = 3
+uint8 TRAJECTORY_STATUS_ABORT = 4
+uint8 TRAJECTORY_STATUS_ILLEGAL_START = 5
+uint8 TRAJECTORY_STATUS_ILLEGAL_FINAL = 6
+uint8 TRAJECTORY_STATUS_IMPOSSIBLE = 7
+
+#uint8 traj_flag
